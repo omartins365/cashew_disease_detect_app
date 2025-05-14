@@ -69,7 +69,7 @@ def select_model() -> YOLOv10:
 
     return load_model(model_path)
 
-     
+
 def display_and_process_file(model: YOLOv10, type_choice: str, temp_path: str, result_path: str) -> None:
     """ Process the uploaded file based on the selected type (Image or Video). """
     try:
@@ -93,34 +93,52 @@ def display_and_process_file(model: YOLOv10, type_choice: str, temp_path: str, r
         st.error(f"Error during processing: {e}")
 
 
+def display_and_process_camera(model: YOLOv10) -> None:
+    """Capture and process an image from the user's webcam."""
+    camera_image = st.camera_input("Take a picture")
+    if camera_image is not None:
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".jpg", dir=RESULT_PATH) as temp_file:
+            temp_file.write(camera_image.getvalue())
+            temp_path = temp_file.name
+
+        result_path = os.path.join(RESULT_PATH, "result_camera.jpg")
+        with st.spinner("Processing camera image..."):
+            if process_image(model, temp_path, result_path):
+                st.success(f"Camera image processed. Result saved: {result_path}")
+                st.image(result_path, "Result Image", width=IMAGE_WIDTH)
+        os.remove(temp_path)
+
+
 def main():
     st.sidebar.title("Cashew Deasease Detection")
     model = select_model()
     
     if model is None:
         return
-    
-    type_choice = st.sidebar.selectbox("Select type", ["Image", "Video"])
-    file = st.sidebar.file_uploader(
-        "Choose a file...",
-        type=["jpg", "png", "jpeg"] if type_choice == "Image" else ["mp4", "avi", "mov"]
-    )
 
-    if file:
-        os.makedirs(RESULT_PATH, exist_ok=True) 
+    type_choice = st.sidebar.selectbox("Select type", ["Image", "Video", "Camera"])
+    file = None
+    if type_choice in ["Image", "Video"]:
+        file = st.sidebar.file_uploader(
+            "Choose a file...",
+            type=["jpg", "png", "jpeg"] if type_choice == "Image" else ["mp4", "avi", "mov"]
+        )
 
-        # Save uploaded file to a temporary location
+    if type_choice == "Camera":
+        os.makedirs(RESULT_PATH, exist_ok=True)
+        display_and_process_camera(model)
+    elif file:
+        os.makedirs(RESULT_PATH, exist_ok=True)
         with tempfile.NamedTemporaryFile(delete=False, suffix=f".{file.name.split('.')[-1]}", dir=RESULT_PATH) as temp_file:
             temp_file.write(file.getvalue())
             temp_path = temp_file.name
 
         result_path = os.path.join(RESULT_PATH, f"result_{file.name}")
         display_and_process_file(model, type_choice, temp_path, result_path)
-
-        # Remove temporary file after processing
-        os.remove(temp_path) 
+        os.remove(temp_path)
     else:
-        st.sidebar.markdown(f"You can download demo files [here]({DEMO_FILES_URL}).")
+        if type_choice in ["Image", "Video"]:
+            st.sidebar.markdown(f"You can download demo files [here]({DEMO_FILES_URL}).")
 
 
 if __name__ == "__main__":
