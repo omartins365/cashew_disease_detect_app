@@ -94,7 +94,7 @@ def display_and_process_file(model: YOLOv10, type_choice: str, temp_path: str, r
 
 
 def main():
-    st.sidebar.title("Object Detection")
+    st.sidebar.title("Cashew Deasease Detection")
     model = select_model()
     
     if model is None:
