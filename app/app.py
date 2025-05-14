@@ -1,3 +1,4 @@
+import concurrent.futures
 import logging  # Add this import
 import os
 import tempfile
@@ -56,24 +57,45 @@ def process_video(model: YOLOv10, video_path: str, result_path: str) -> bool:
         out = cv2.VideoWriter(result_path, fourcc, fps, (frame_width, frame_height))
 
         frame_count = 0
-        interval = int(fps * 30)  # 30 seconds interval
+        interval = int(fps * 30)  # 10 seconds interval
         last_results = None
+        future = None
 
         logging.info(f"Video properties: width={frame_width}, height={frame_height}, fps={fps}, interval={interval}")
 
-        while cap.isOpened():
-            success, frame = cap.read()
-            if not success:
-                logging.info("End of video or failed to read frame.")
-                break
+        with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
+            while cap.isOpened():
+                success, frame = cap.read()
+                if not success:
+                    logging.info("End of video or failed to read frame.")
+                    break
 
-            if frame_count % interval == 0 or last_results is None:
-                logging.info(f"Running detection at frame {frame_count}")
-                last_results = model(frame)  # Perform object detection every 10s
+                # Start async detection every interval or if first frame
+                if frame_count % interval == 0 or last_results is None:
+                    if future is not None:
+                        # Wait for previous detection to finish
+                        last_results = future.result()
+                        logging.info(f"Detection finished at frame {frame_count}")
+                    # Submit new detection task
+                    logging.info(f"Submitting detection at frame {frame_count}")
+                    future = executor.submit(model, frame)
+                elif future is not None and future.done():
+                    # If detection finished in background, update result
+                    last_results = future.result()
+                    future = None
 
-            out.write(last_results[0].plot())  # Use last result for every frame
+                # Use last_results for plotting
+                if last_results is not None:
+                    out.write(last_results[0].plot())
+                else:
+                    out.write(frame)  # fallback: write raw frame
 
-            frame_count += 1
+                frame_count += 1
+
+            # Ensure last detection is written for remaining frames if needed
+            if future is not None and not future.done():
+                last_results = future.result()
+                logging.info("Final detection finished at end of video.")
 
         logging.info(f"Video processing complete. Output saved: {result_path}")
         return True

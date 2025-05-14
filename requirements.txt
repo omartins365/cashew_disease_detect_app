@@ -6,3 +6,4 @@ wget==3.2
 streamlit-webrtc>=0.47
 opencv-python>=4.9
 numpy>=1.26
+-e ./app/yolov10
