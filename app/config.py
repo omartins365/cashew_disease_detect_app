@@ -13,4 +13,4 @@ EPOCHS = 100
 IMG_SIZE = 640
 BATCH_SIZE = 24
 
-TRAINED_MODEL_PATH = os.path.join(os.getcwd(), "app", "yolov10", "runs", "detect", "train", "weights", "best.onnx")
+TRAINED_MODEL_PATH = os.path.join(os.getcwd(), "app", "model", "best.onnx")
