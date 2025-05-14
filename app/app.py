@@ -1,3 +1,4 @@
+import logging  # Add this import
 import os
 import tempfile
 
@@ -17,14 +18,23 @@ from streamlit_webrtc import webrtc_streamer
 from ultralytics import YOLOv10
 from utils import download_model, load_model
 
+# Setup logging
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s"
+)
+
 
 def process_image(model: YOLOv10, image_path: str, result_path: str) -> bool:
     """ Perform object detection on an image and save the result. """
     try:
+        logging.info(f"Processing image: {image_path}")
         result = model(source=image_path)[0]  # Perform object detection
         result.save(result_path)  # Save the result image
+        logging.info(f"Result saved: {result_path}")
         return True
     except Exception as e:
+        logging.error(f"Error processing image: {e}")
         st.error(f"Error processing image: {e}")
         return False
 
@@ -32,8 +42,10 @@ def process_image(model: YOLOv10, image_path: str, result_path: str) -> bool:
 def process_video(model: YOLOv10, video_path: str, result_path: str) -> bool:
     """ Perform object detection on a video and save the result. """
     try:
+        logging.info(f"Opening video file: {video_path}")
         cap = cv2.VideoCapture(video_path)
         if not cap.isOpened():
+            logging.error("Could not open video file.")
             st.error("Error: Could not open video file.")
             return False
 
@@ -42,20 +54,36 @@ def process_video(model: YOLOv10, video_path: str, result_path: str) -> bool:
         fps = int(cap.get(cv2.CAP_PROP_FPS))
         fourcc = cv2.VideoWriter_fourcc(*'vp80')
         out = cv2.VideoWriter(result_path, fourcc, fps, (frame_width, frame_height))
-        
+
+        frame_count = 0
+        interval = int(fps * 30)  # 30 seconds interval
+        last_results = None
+
+        logging.info(f"Video properties: width={frame_width}, height={frame_height}, fps={fps}, interval={interval}")
+
         while cap.isOpened():
             success, frame = cap.read()
             if not success:
+                logging.info("End of video or failed to read frame.")
                 break
-            results = model(frame)  # Perform object detection on each frame
-            out.write(results[0].plot())  # Write processed frame to output video
+
+            if frame_count % interval == 0 or last_results is None:
+                logging.info(f"Running detection at frame {frame_count}")
+                last_results = model(frame)  # Perform object detection every 10s
+
+            out.write(last_results[0].plot())  # Use last result for every frame
+
+            frame_count += 1
+
+        logging.info(f"Video processing complete. Output saved: {result_path}")
         return True
     except Exception as e:
+        logging.error(f"Error processing video: {e}")
         st.error(f"Error processing video: {e}")
         return False
     finally:
         cap.release()
-        out.release()  
+        out.release()
 
 
 def select_model() -> YOLOv10:
