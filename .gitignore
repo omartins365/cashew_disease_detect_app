@@ -163,7 +163,7 @@ cython_debug/
 
 app/yolov10
 
-app/model
+# app/model
 
 app/result
 
