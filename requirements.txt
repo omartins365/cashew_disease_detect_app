@@ -6,4 +6,17 @@ wget==3.2
 streamlit-webrtc>=0.47
 opencv-python-headless
 numpy>=1.26
+huggingface-hub==0.23.2
+torch==2.0.1
+torchvision==0.15.2
+onnx==1.14.0
+onnxruntime==1.15.1
+pycocotools==2.0.7
+PyYAML==6.0.1
+scipy==1.13.0
+onnxslim==0.1.31
+onnxruntime-gpu==1.18.0
+psutil==5.9.8
+py-cpuinfo==9.0.0
+safetensors==0.4.3
 git+https://github.com/THU-MIG/yolov10.git#egg=ultralytics
