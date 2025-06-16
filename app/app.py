@@ -3,7 +3,6 @@ import logging  # Add this import
 import os
 import tempfile
 
-import av
 import cv2
 import numpy as np
 import streamlit as st
@@ -15,7 +14,6 @@ from config import (
     TRAINED_MODEL_PATH,
 )
 from PIL import Image
-from streamlit_webrtc import webrtc_streamer
 from ultralytics import YOLOv10
 from utils import download_model, load_model
 
@@ -175,23 +173,6 @@ def draw_boxes(frame: np.ndarray, results) -> np.ndarray:
     return frame
 
 
-def live_cam_detect(model: YOLOv10):
-    st.title("Live Cam Detect")
-    st.info("Allow camera access and see real-time detection.")
-
-    def callback(frame: av.VideoFrame) -> av.VideoFrame:
-        img = frame.to_ndarray(format="bgr24")
-        results = model(img)
-        img = results[0].plot()  # Use YOLO's built-in plotting
-        return av.VideoFrame.from_ndarray(img, format="bgr24")
-
-    webrtc_streamer(
-        key="live-detect",
-        video_frame_callback=callback,
-        sendback_audio=False
-    )
-
-
 def main():
     st.sidebar.title("Cashew Deasease Detection")
     model = select_model()
@@ -200,7 +181,7 @@ def main():
         return
 
     type_choice = st.sidebar.selectbox(
-        "Select type", ["Image", "Video", "Camera", "Live Cam Detect"]
+        "Select type", ["Image", "Video", "Camera"]
     )
     file = None
     if type_choice in ["Image", "Video"]:
@@ -212,8 +193,6 @@ def main():
     if type_choice == "Camera":
         os.makedirs(RESULT_PATH, exist_ok=True)
         display_and_process_camera(model)
-    elif type_choice == "Live Cam Detect":
-        live_cam_detect(model)
     elif file:
         os.makedirs(RESULT_PATH, exist_ok=True)
         with tempfile.NamedTemporaryFile(delete=False, suffix=f".{file.name.split('.')[-1]}", dir=RESULT_PATH) as temp_file:
