@@ -17,5 +17,5 @@ psutil==5.9.8
 py-cpuinfo==9.0.0
 safetensors==0.4.3
 # YOLOv10 (as editable install)
--e ./app/yolov10/ultralytics
 -e ./app/yolov10
+-e ./app/yolov10/ultralytics
