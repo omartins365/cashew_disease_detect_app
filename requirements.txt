@@ -3,4 +3,24 @@ gdown==5.2.0
 htbuilder==0.6.2
 supervision==0.20.0
 wget==3.2
+
+# Core ML and image/video processing
+numpy
+opencv-python
+Pillow
+
+# PyTorch (YOLOv10 and custom models)
+torch
+torchvision
+
+# For handling YAML configs
+pyyaml
+
+# For progress bars, etc.
+tqdm
+
+# For ONNX model support (if needed)
+onnxruntime
+
+# YOLOv10 (as editable install)
 git+https://github.com/THU-MIG/yolov10.git#egg=ultralytics
