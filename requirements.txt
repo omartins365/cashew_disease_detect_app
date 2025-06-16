@@ -24,3 +24,4 @@ onnxruntime
 
 # YOLOv10 (as editable install)
 -e ./app/yolov10/ultralytics
+-e ./app/yolov10
