@@ -161,7 +161,11 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 
+<<<<<<< HEAD
 !app/yolov10
+=======
+# app/yolov10
+>>>>>>> fdde5d06986d484b1fb37b86bcad79e8ade16c52
 
 # app/model
 
