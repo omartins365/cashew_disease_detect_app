@@ -165,7 +165,7 @@ cython_debug/
 
 !app/model
 
-app/result
+!app/result
 
 /.dotfiles
 
