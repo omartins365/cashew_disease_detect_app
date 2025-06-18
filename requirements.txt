@@ -7,4 +7,6 @@ streamlit-webrtc>=0.47
 opencv-python>=4.9
 numpy>=1.26
 # -e ./app/yolov10/ultralytics
--e ./app/yolov10
+# -e ./app/yolov10
+-e git+https://github.com/THU-MIG/yolov10.git#egg=yolov10
+ultralytics
