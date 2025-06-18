@@ -1,3 +1,9 @@
+import os
+import subprocess
+
+if not os.path.exists("app/yolov10"):
+    subprocess.run(["git", "clone", "https://github.com/THU-MIG/yolov10.git", "app/yolov10"], check=True)
+
 import concurrent.futures
 import logging  # Add this import
 import os
