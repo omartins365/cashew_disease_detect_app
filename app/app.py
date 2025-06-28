@@ -40,7 +40,7 @@ def process_image(model: YOLOv10, image_path: str, result_path: str) -> dict:
     try:
         logging.info(f"Processing image: {image_path}")
         start_time = time.time()
-        result = model(source=image_path)  # Perform object detection
+        result = model(source=image_path, conf=0.52)  # Perform object detection
         inference_time = time.time() - start_time
         result[0].save(result_path)  # Save the result image
         logging.info(f"Result saved: {result_path} in {inference_time:.2f} seconds")
@@ -85,7 +85,7 @@ def process_video(model: YOLOv10, video_path: str, result_path: str) -> dict:
 
             if frame_count % interval == 0 or last_results is None:
                 logging.info(f"Running detection at frame {frame_count}")
-                last_results = model(frame)
+                last_results = model(frame, conf=0.52)  # Perform object detection
 
             out.write(last_results[0].plot())
             frame_count += 1
