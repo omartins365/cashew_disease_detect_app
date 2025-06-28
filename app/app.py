@@ -132,7 +132,7 @@ def display_and_process_file(model: YOLOv10, type_choice: str, temp_path: str, r
                 "Platform": platform.platform(),
                 "Processor": platform.processor(),
                 "RAM (GB)": round(psutil.virtual_memory().total / (1024 ** 3), 2),
-                "GPU": torch.cuda.get_device_name(0) if torch.cuda.is_available() else "CPU"
+                "Inference via": torch.cuda.get_device_name(0) if torch.cuda.is_available() else "CPU"
             }
             st.image(image, "Uploaded Image", width=IMAGE_WIDTH)
             # Process and display result image
@@ -141,7 +141,7 @@ def display_and_process_file(model: YOLOv10, type_choice: str, temp_path: str, r
                 if result["success"]:
                     st.success(f"Image processed. Result saved: {result_path}")
                     st.image(result_path, "Result Image", width=IMAGE_WIDTH)
-                    st.write(f"**Inference Time:** {result['inference_time']:.2f} seconds")
+                    # st.write(f"**Inference Time:** {result['inference_time']:.2f} seconds")
                     st.metric("Inference Time (s)", f"{result['inference_time']:.2f}")
                     st.write(f"**Image Size:** {image_width}x{image_height} px, {image_size:.1f} KB")
                     st.write("**Device Info:**")
@@ -164,7 +164,7 @@ def display_and_process_file(model: YOLOv10, type_choice: str, temp_path: str, r
                 "Platform": platform.platform(),
                 "Processor": platform.processor(),
                 "RAM (GB)": round(psutil.virtual_memory().total / (1024 ** 3), 2),
-                "GPU": torch.cuda.get_device_name(0) if torch.cuda.is_available() else "CPU"
+                "Inference via": torch.cuda.get_device_name(0) if torch.cuda.is_available() else "CPU"
             }
 
             # Process and display result video
