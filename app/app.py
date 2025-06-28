@@ -143,7 +143,7 @@ def process_image_and_display(model: YOLOv10, temp_path: str, result_path: str) 
             # st.write(f"**Inference Time:** {result['inference_time']:.2f} seconds")
             
             st.metric("Total Time (s)", f"{result['inference_time']:.2f}")
-            speed_info = result["result"].get("speed", "N/A")
+            speed_info = result["result"]
             st.json({"Breakdown (ms)": speed_info})
             st.write(f"**Image Size:** {image_width}x{image_height} px, {image_size:.1f} KB")
             st.write("**Device Info:**")
