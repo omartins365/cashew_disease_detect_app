@@ -120,36 +120,41 @@ def select_model() -> YOLOv10:
 def has_gpu():
     return torch.cuda.is_available()
 
+def process_image_and_display(model: YOLOv10, temp_path: str, result_path: str) -> None:
+    image = Image.open(temp_path)
+    image_size = os.path.getsize(temp_path) / 1024  # KB
+    image_width, image_height = image.size
+
+    # Device info
+    device_info = {
+        "Platform": platform.platform(),
+        # "Processor": platform.processor(),
+        # "RAM (GB)": round(psutil.virtual_memory().total / (1024 ** 3), 2),
+        "Inference via": torch.cuda.get_device_name(0) if torch.cuda.is_available() else "CPU"
+    }
+    st.image(image, "Uploaded Image", width=IMAGE_WIDTH)
+    # Process and display result image
+    with st.spinner("Processing image..."):
+        """ Process the uploaded image and display the result. """
+        result = process_image(model, temp_path, result_path)
+        if result["success"]:
+            st.success(f"Image processed. Result saved: {result_path}")
+            st.image(result_path, "Result Image", width=IMAGE_WIDTH)
+            # st.write(f"**Inference Time:** {result['inference_time']:.2f} seconds")
+            
+            st.metric("Total Time (s)", f"{result['inference_time']:.2f}")
+            st.json({"Breakdown (ms)": result["result"]["speed"]})  
+            st.write(f"**Image Size:** {image_width}x{image_height} px, {image_size:.1f} KB")
+            st.write("**Device Info:**")
+            st.json(device_info)
+        else:
+            st.error("Image processing failed.")
+
 def display_and_process_file(model: YOLOv10, type_choice: str, temp_path: str, result_path: str) -> None:
     """ Process the uploaded file based on the selected type (Image or Video). """
     try:
         if type_choice == "Image":
-            image = Image.open(temp_path)
-            image_size = os.path.getsize(temp_path) / 1024  # KB
-            image_width, image_height = image.size
-
-            # Device info
-            device_info = {
-                "Platform": platform.platform(),
-                # "Processor": platform.processor(),
-                # "RAM (GB)": round(psutil.virtual_memory().total / (1024 ** 3), 2),
-                "Inference via": torch.cuda.get_device_name(0) if torch.cuda.is_available() else "CPU"
-            }
-            st.image(image, "Uploaded Image", width=IMAGE_WIDTH)
-            # Process and display result image
-            with st.spinner("Processing image..."):
-                result = process_image(model, temp_path, result_path)
-                if result["success"]:
-                    st.success(f"Image processed. Result saved: {result_path}")
-                    st.image(result_path, "Result Image", width=IMAGE_WIDTH)
-                    # st.write(f"**Inference Time:** {result['inference_time']:.2f} seconds")
-                    st.json(result["result"])  # Display bounding boxes
-                    st.metric("Inference Time (s)", f"{result['inference_time']:.2f}")
-                    st.write(f"**Image Size:** {image_width}x{image_height} px, {image_size:.1f} KB")
-                    st.write("**Device Info:**")
-                    st.json(device_info)
-                else:
-                    st.error("Image processing failed.")
+            process_image_and_display(model, temp_path, result_path)
         else:
             st.video(temp_path)
             cap = cv2.VideoCapture(temp_path)
@@ -198,9 +203,7 @@ def display_and_process_camera(model: YOLOv10) -> None:
 
         result_path = os.path.join(RESULT_PATH, "result_camera.jpg")
         with st.spinner("Processing camera image..."):
-            if process_image(model, temp_path, result_path):
-                st.success(f"Camera image processed. Result saved: {result_path}")
-                st.image(result_path, "Result Image", width=IMAGE_WIDTH)
+            process_image_and_display(model, temp_path, result_path)
         os.remove(temp_path)
 
 
