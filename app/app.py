@@ -44,7 +44,7 @@ def process_image(model: YOLOv10, image_path: str, result_path: str) -> dict:
         inference_time = time.time() - start_time
         result[0].save(result_path)  # Save the result image
         logging.info(f"Result saved: {result_path} in {inference_time:.2f} seconds")
-        return {"success": True, "inference_time": inference_time, "result": result[0]}
+        return {"success": True, "inference_time": inference_time, "result": result}
     except Exception as e:
         logging.error(f"Error processing image: {e}")
         st.error(f"Error processing image: {e}")
@@ -143,7 +143,7 @@ def process_image_and_display(model: YOLOv10, temp_path: str, result_path: str) 
             # st.write(f"**Inference Time:** {result['inference_time']:.2f} seconds")
             
             st.metric("Total Time (s)", f"{result['inference_time']:.2f}")
-            st.json({"Breakdown (ms)": result["result"]["speed"]})  
+            st.json({"Breakdown (ms)": result["result"][0]["speed"]})  
             st.write(f"**Image Size:** {image_width}x{image_height} px, {image_size:.1f} KB")
             st.write("**Device Info:**")
             st.json(device_info)
