@@ -7,6 +7,8 @@ if not os.path.exists("app/yolov10"):
 import logging  # Add this import
 import os
 import tempfile
+import platform
+import psutil
 
 import av
 import cv2
@@ -122,6 +124,16 @@ def display_and_process_file(model: YOLOv10, type_choice: str, temp_path: str, r
     try:
         if type_choice == "Image":
             image = Image.open(temp_path)
+            image_size = os.path.getsize(temp_path) / 1024  # KB
+            image_width, image_height = image.size
+
+            # Device info
+            device_info = {
+                "Platform": platform.platform(),
+                "Processor": platform.processor(),
+                "RAM (GB)": round(psutil.virtual_memory().total / (1024 ** 3), 2),
+                "GPU": torch.cuda.get_device_name(0) if torch.cuda.is_available() else "CPU"
+            }
             st.image(image, "Uploaded Image", width=IMAGE_WIDTH)
             # Process and display result image
             with st.spinner("Processing image..."):
@@ -129,12 +141,32 @@ def display_and_process_file(model: YOLOv10, type_choice: str, temp_path: str, r
                 if result["success"]:
                     st.success(f"Image processed. Result saved: {result_path}")
                     st.image(result_path, "Result Image", width=IMAGE_WIDTH)
-                    st.write(f"Inference Time: {result['inference_time']:.2f} seconds")
+                    st.write(f"**Inference Time:** {result['inference_time']:.2f} seconds")
                     st.metric("Inference Time (s)", f"{result['inference_time']:.2f}")
+                    st.write(f"**Image Size:** {image_width}x{image_height} px, {image_size:.1f} KB")
+                    st.write("**Device Info:**")
+                    st.json(device_info)
                 else:
                     st.error("Image processing failed.")
         else:
             st.video(temp_path)
+            cap = cv2.VideoCapture(temp_path)
+            video_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+            video_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+            video_fps = cap.get(cv2.CAP_PROP_FPS)
+            video_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+            video_size = os.path.getsize(temp_path) / 1024  # KB
+            cap.release()
+
+     
+            # Device info
+            device_info = {
+                "Platform": platform.platform(),
+                "Processor": platform.processor(),
+                "RAM (GB)": round(psutil.virtual_memory().total / (1024 ** 3), 2),
+                "GPU": torch.cuda.get_device_name(0) if torch.cuda.is_available() else "CPU"
+            }
+
             # Process and display result video
             with st.spinner("Processing video..."):
                 result_path = result_path.replace(".mp4", ".webm")
@@ -142,8 +174,12 @@ def display_and_process_file(model: YOLOv10, type_choice: str, temp_path: str, r
                 if result["success"]:
                     st.success(f"Video processed. Result saved: {result_path}")
                     st.video(result_path)
-                    st.write(f"Inference Time: {result['inference_time']:.2f} seconds")
-                    st.metric("Inference Time (s)", f"{result['inference_time']:.2f}")
+                    st.write(f"**Total Processing Time:** {result['total_time']:.2f} seconds")
+                    st.metric("Total Processing Time (s)", f"{result['total_time']:.2f}")
+                    st.metric("Average FPS", f"{result['fps']:.2f}")
+                    st.write(f"**Video Size:** {video_width}x{video_height} px, {video_fps} FPS, {video_frames} frames, {video_size:.1f} KB")
+                    st.write("**Device Info:**")
+                    st.json(device_info)
                 else:
                     st.error("Video processing failed.")
     except Exception as e:
