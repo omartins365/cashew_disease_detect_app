@@ -244,7 +244,6 @@ def main():
     
     if model is None:
         st.markdown("""
-        # 🌰 Cashew Disease Detection (YOLOv10)
         Detect diseases in cashew plants using a custom-trained YOLOv10 model.  
         Upload an image or video, or use your camera to get instant results.
         """)
@@ -258,14 +257,14 @@ def main():
     )
     file = None
 
-    if type_choice == "Image":
-        st.sidebar.markdown("🖼️ **Upload a clear image of a cashew leaf or nut.**")
-    elif type_choice == "Video":
-        st.sidebar.markdown("🎥 **Upload a short video showing cashew plants.**")
-    elif type_choice == "Camera":
-        st.sidebar.markdown("📷 **Capture a photo using your device camera.**")
-    elif type_choice == "Live Cam Detect":
-        st.sidebar.markdown("🔴 **Live detection (GPU required).**")
+    # if type_choice == "Image":
+    #     st.sidebar.markdown("🖼️ **Upload a clear image of a cashew leaf or nut.**")
+    # elif type_choice == "Video":
+    #     st.sidebar.markdown("🎥 **Upload a short video showing cashew plants.**")
+    # elif type_choice == "Camera":
+    #     st.sidebar.markdown("📷 **Capture a photo using your device camera.**")
+    # elif type_choice == "Live Cam Detect":
+    #     st.sidebar.markdown("🔴 **Live detection (GPU required).**")
 
     if type_choice in ["Image", "Video"]:
         file = st.sidebar.file_uploader(
