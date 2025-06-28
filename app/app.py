@@ -130,8 +130,8 @@ def display_and_process_file(model: YOLOv10, type_choice: str, temp_path: str, r
             # Device info
             device_info = {
                 "Platform": platform.platform(),
-                "Processor": platform.processor(),
-                "RAM (GB)": round(psutil.virtual_memory().total / (1024 ** 3), 2),
+                # "Processor": platform.processor(),
+                # "RAM (GB)": round(psutil.virtual_memory().total / (1024 ** 3), 2),
                 "Inference via": torch.cuda.get_device_name(0) if torch.cuda.is_available() else "CPU"
             }
             st.image(image, "Uploaded Image", width=IMAGE_WIDTH)
@@ -162,8 +162,8 @@ def display_and_process_file(model: YOLOv10, type_choice: str, temp_path: str, r
             # Device info
             device_info = {
                 "Platform": platform.platform(),
-                "Processor": platform.processor(),
-                "RAM (GB)": round(psutil.virtual_memory().total / (1024 ** 3), 2),
+                # "Processor": platform.processor(),
+                # "RAM (GB)": round(psutil.virtual_memory().total / (1024 ** 3), 2),
                 "Inference via": torch.cuda.get_device_name(0) if torch.cuda.is_available() else "CPU"
             }
 
