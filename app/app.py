@@ -42,7 +42,7 @@ def process_image(model: YOLOv10, image_path: str, result_path: str) -> dict:
         logging.info(f"Processing image: {image_path}")
         start_time = time.time()
         result = model(source=image_path, conf=CONFIDENCE_THRESHOLD)  # Perform object detection
-        inference_time = time.time() - start_time
+        inference_time = (result[0].speed["preprocess"] + result[0].speed["inference"] + result[0].speed["postprocess"])/1000
         result[0].save(result_path)  # Save the result image
         logging.info(f"Result saved: {result_path} in {inference_time:.2f} seconds")
         return {"success": True, "inference_time": inference_time, "result": result}
