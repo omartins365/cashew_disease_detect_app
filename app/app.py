@@ -143,6 +143,7 @@ def display_and_process_file(model: YOLOv10, type_choice: str, temp_path: str, r
                     st.success(f"Image processed. Result saved: {result_path}")
                     st.image(result_path, "Result Image", width=IMAGE_WIDTH)
                     # st.write(f"**Inference Time:** {result['inference_time']:.2f} seconds")
+                    st.json(result["result"])  # Display bounding boxes
                     st.metric("Inference Time (s)", f"{result['inference_time']:.2f}")
                     st.write(f"**Image Size:** {image_width}x{image_height} px, {image_size:.1f} KB")
                     st.write("**Device Info:**")
@@ -175,8 +176,8 @@ def display_and_process_file(model: YOLOv10, type_choice: str, temp_path: str, r
                 if result["success"]:
                     st.success(f"Video processed. Result saved: {result_path}")
                     st.video(result_path)
-                    st.write(f"**Total Processing Time:** {result['total_time']:.2f} seconds")
-                    st.metric("Total Processing Time (s)", f"{result['total_time']:.2f}")
+                    st.write(f"**Total Processing Time:** {result['inference_time']:.2f} seconds")
+                    st.metric("Total Processing Time (s)", f"{result['inference_time']:.2f}")
                     st.metric("Average FPS", f"{result['fps']:.2f}")
                     st.write(f"**Video Size:** {video_width}x{video_height} px, {video_fps} FPS, {video_frames} frames, {video_size:.1f} KB")
                     st.write("**Device Info:**")
