@@ -141,7 +141,7 @@ def process_image_and_display(model: YOLOv10, temp_path: str, result_path: str) 
     with col2:
         
         with st.spinner("Processing image..."):
-            """ Process the uploaded image and display the result. """
+            #""" Process the uploaded image and display the result. """
             result = process_image(model, temp_path, result_path)
             if result["success"]:
                 st.image(result_path, "Result Image", use_column_width=True)
