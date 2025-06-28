@@ -133,23 +133,26 @@ def process_image_and_display(model: YOLOv10, temp_path: str, result_path: str) 
         # "RAM (GB)": round(psutil.virtual_memory().total / (1024 ** 3), 2),
         "Inference via": torch.cuda.get_device_name(0) if torch.cuda.is_available() else "CPU"
     }
-    st.image(image, "Uploaded Image", width=IMAGE_WIDTH)
+    col1, col2 = st.columns(2)
+    with col1:
+        st.image(image, "Uploaded Image", width=IMAGE_WIDTH)
     # Process and display result image
-    with st.spinner("Processing image..."):
-        """ Process the uploaded image and display the result. """
-        result = process_image(model, temp_path, result_path)
-        if result["success"]:
-            st.success(f"Image processed. Result saved: {result_path}")
-            st.image(result_path, "Result Image", width=IMAGE_WIDTH)
-            # st.write(f"**Inference Time:** {result['inference_time']:.2f} seconds")
-            
-            st.metric("Total Time (s)", f"{result['inference_time']:.2f}")
-            st.json({"Breakdown (ms)": result["result"][0].speed})  
-            st.write(f"**Image Size:** {image_width}x{image_height} px, {image_size:.1f} KB")
-            st.write("**Device Info:**")
-            st.json(device_info)
-        else:
-            st.error("Image processing failed.")
+    with col2:
+        with st.spinner("Processing image..."):
+            """ Process the uploaded image and display the result. """
+            result = process_image(model, temp_path, result_path)
+            if result["success"]:
+                st.success(f"Image processed. Result saved: {result_path}")
+                st.image(result_path, "Result Image", width=IMAGE_WIDTH)
+                # st.write(f"**Inference Time:** {result['inference_time']:.2f} seconds")
+                
+                st.metric("Total Time (s)", f"{result['inference_time']:.2f}")
+                st.json({"Breakdown (ms)": result["result"][0].speed})  
+                st.write(f"**Image Size:** {image_width}x{image_height} px, {image_size:.1f} KB")
+                st.write("**Device Info:**")
+                st.json(device_info)
+            else:
+                st.error("Image processing failed.")
 
 def display_and_process_file(model: YOLOv10, type_choice: str, temp_path: str, result_path: str) -> None:
     """ Process the uploaded file based on the selected type (Image or Video). """
