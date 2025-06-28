@@ -139,25 +139,35 @@ def process_image_and_display(model: YOLOv10, temp_path: str, result_path: str) 
         st.image(image, "Uploaded Image", use_column_width=True)
     # Process and display result image
     with col2:
-        if result != None:
-            st.image(result_path, "Result Image", use_column_width=True)
-        else:
-            st.spinner("Processing image...")
+        
+        with st.spinner("Processing image..."):
+            """ Process the uploaded image and display the result. """
+            result = process_image(model, temp_path, result_path)
+            if result["success"]:
+                st.image(result_path, "Result Image", use_column_width=True)
+                # st.success(f"Image processed. Result saved: {result_path}")
+                # st.write(f"**Inference Time:** {result['inference_time']:.2f} seconds")
+                
+                # st.metric("Total Time (s)", f"{result['inference_time']:.2f}")
+                # st.json({"Breakdown (ms)": result["result"][0].speed})  
+                # st.write(f"**Image Size:** {image_width}x{image_height} px, {image_size:.1f} KB")
+                # st.write("**Device Info:**")
+                # st.json(device_info)
+            else:
+                st.error("Image processing failed.")
+    if result["success"]:
+        # st.image(result_path, "Result Image", use_column_width=True)
+        st.success(f"Image processed. Result saved: {result_path}")
+        # st.write(f"**Inference Time:** {result['inference_time']:.2f} seconds")
+        
+        st.metric("Total Time (s)", f"{result['inference_time']:.2f}")
+        st.json({"Breakdown (ms)": result["result"][0].speed})  
+        st.write(f"**Image Size:** {image_width}x{image_height} px, {image_size:.1f} KB")
+        st.write("**Device Info:**")
+        st.json(device_info)
+    else:
+        st.error("Image processing failed.")
 
-    with st.spinner("Processing image..."):
-        """ Process the uploaded image and display the result. """
-        result = process_image(model, temp_path, result_path)
-        if result["success"]:
-            st.success(f"Image processed. Result saved: {result_path}")
-            # st.write(f"**Inference Time:** {result['inference_time']:.2f} seconds")
-            
-            st.metric("Total Time (s)", f"{result['inference_time']:.2f}")
-            st.json({"Breakdown (ms)": result["result"][0].speed})  
-            st.write(f"**Image Size:** {image_width}x{image_height} px, {image_size:.1f} KB")
-            st.write("**Device Info:**")
-            st.json(device_info)
-        else:
-            st.error("Image processing failed.")
 
 def display_and_process_file(model: YOLOv10, type_choice: str, temp_path: str, result_path: str) -> None:
     """ Process the uploaded file based on the selected type (Image or Video). """
