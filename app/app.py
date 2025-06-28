@@ -104,11 +104,12 @@ def process_video(model: YOLOv10, video_path: str, result_path: str) -> dict:
 
 def select_model() -> YOLOv10:
     """Select and load the model based on user choice."""
-    model_choice = st.sidebar.selectbox("Select model", ["Default YOLOv10", "Custom Trained Model"])
+    model_choice = "Custom Trained Model";
+    # st.sidebar.selectbox("Select model", ["Default YOLOv10", "Custom Trained Model"])
     model_path = TRAINED_MODEL_PATH if model_choice == "Custom Trained Model" else MODEL_PATH
     
-    # if model_choice == "Default YOLOv10" and not download_model(MODEL_PATH):
-    #     return None
+    if model_choice == "Default YOLOv10" and not download_model(MODEL_PATH):
+        return None
 
     if model_choice == "Custom Trained Model" and not os.path.exists(TRAINED_MODEL_PATH):
         st.error(f"Model file '{TRAINED_MODEL_PATH}' not found.")
