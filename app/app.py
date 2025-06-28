@@ -92,7 +92,7 @@ def process_video(model: YOLOv10, video_path: str, result_path: str) -> dict:
 
         inference_time = time.time() - start_time
         logging.info(f"Video processing complete. Output saved: {result_path} in {inference_time:.2f} seconds")
-        return {"success": True, "inference_time": inference_time}
+        return {"success": True, "inference_time": inference_time, "fps": fps}
     except Exception as e:
         logging.error(f"Error processing video: {e}")
         st.error(f"Error processing video: {e}")
