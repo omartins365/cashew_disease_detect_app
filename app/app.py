@@ -49,24 +49,28 @@ def process_image(model: YOLOv10, image_path: str, result_path: str) -> dict:
         return {"success": False, "inference_time": None}
 
 
-def process_video(model: YOLOv10, video_path: str, result_path: str) -> bool:
-    """ Perform object detection on a video and save the result. """
+def process_video(model: YOLOv10, video_path: str, result_path: str) -> dict:
+    """Perform object detection on a video, save the result, and return performance metrics."""
+    start_time = time.time()
     try:
         logging.info(f"Opening video file: {video_path}")
         cap = cv2.VideoCapture(video_path)
         if not cap.isOpened():
             logging.error("Could not open video file.")
             st.error("Error: Could not open video file.")
-            return False
+            return {"success": False, "inference_time": None}
 
         frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
         frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-        fps = int(cap.get(cv2.CAP_PROP_FPS))
+        fps = cap.get(cv2.CAP_PROP_FPS)
+        if fps == 0:
+            fps = 30  # fallback fps
+
         fourcc = cv2.VideoWriter_fourcc(*'vp80')
         out = cv2.VideoWriter(result_path, fourcc, fps, (frame_width, frame_height))
 
         frame_count = 0
-        interval = int(fps * 30)  # 30 seconds interval
+        interval = int(fps * 30)  # run detection every 30 seconds
         last_results = None
 
         logging.info(f"Video properties: width={frame_width}, height={frame_height}, fps={fps}, interval={interval}")
@@ -79,18 +83,18 @@ def process_video(model: YOLOv10, video_path: str, result_path: str) -> bool:
 
             if frame_count % interval == 0 or last_results is None:
                 logging.info(f"Running detection at frame {frame_count}")
-                last_results = model(frame)  # Perform object detection every 10s
+                last_results = model(frame)
 
-            out.write(last_results[0].plot())  # Use last result for every frame
-
+            out.write(last_results[0].plot())
             frame_count += 1
 
-        logging.info(f"Video processing complete. Output saved: {result_path}")
-        return True
+        inference_time = time.time() - start_time
+        logging.info(f"Video processing complete. Output saved: {result_path} in {inference_time:.2f} seconds")
+        return {"success": True, "inference_time": inference_time}
     except Exception as e:
         logging.error(f"Error processing video: {e}")
         st.error(f"Error processing video: {e}")
-        return False
+        return {"success": False, "inference_time": None}
     finally:
         cap.release()
         out.release()
@@ -134,9 +138,14 @@ def display_and_process_file(model: YOLOv10, type_choice: str, temp_path: str, r
             # Process and display result video
             with st.spinner("Processing video..."):
                 result_path = result_path.replace(".mp4", ".webm")
-                if process_video(model, temp_path, result_path):
+                result = process_video(model, temp_path, result_path)
+                if result["success"]:
                     st.success(f"Video processed. Result saved: {result_path}")
                     st.video(result_path)
+                    st.write(f"Inference Time: {result['inference_time']:.2f} seconds")
+                    st.metric("Inference Time (s)", f"{result['inference_time']:.2f}")
+                else:
+                    st.error("Video processing failed.")
     except Exception as e:
         st.error(f"Error during processing: {e}")
 
