@@ -277,7 +277,7 @@ def main():
     # st.sidebar.title("🌰 Cashew Disease Detection")
     st.sidebar.markdown("Upload an image or video of cashew leaves, nuts or stem to detect diseases using the custom YOLOv10 model.")
 
-    st.logo("app/asset/lautech_logo.png")
+    # st.logo("app/asset/lautech_logo.png")
     
     
     model = select_model()
