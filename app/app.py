@@ -271,7 +271,7 @@ def live_cam_detect(model: YOLOv10):
 
 
 def main():
-    st.help("Detection and Classification of Cashew Diseases using YOLOv10")
+    # st.help("Detection and Classification of Cashew Diseases using YOLOv10")
     st.sidebar.title("Cashew Deasease Detection")
 
     # st.sidebar.title("🌰 Cashew Disease Detection")
