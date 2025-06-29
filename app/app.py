@@ -323,11 +323,13 @@ def main():
         display_and_process_file(model, type_choice, temp_path, result_path)
         os.remove(temp_path)
     else:
+        cols = st.columns([1, 2, 1])
+        with cols[1]:
+            st.image(os.path.join(os.getcwd(), "app", "asset", "lautech_logo.png"))
         st.markdown("""
         Detect diseases in cashew plants using a custom-trained YOLOv10 model.  
         Upload an image or video, or use your camera to get instant results.
         """)
-        st.image(os.path.join(os.getcwd(), "app", "asset", "lautech_logo.png"))
         if type_choice in ["Image", "Video"]:
             st.sidebar.markdown(f"You can download demo files [here]({DEMO_FILES_URL}).")
 
