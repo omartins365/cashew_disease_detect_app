@@ -327,7 +327,7 @@ def main():
         Detect diseases in cashew plants using a custom-trained YOLOv10 model.  
         Upload an image or video, or use your camera to get instant results.
         """)
-        st.image("app/asset/lautech_logo.png")
+        st.image(os.path.join(os.getcwd(), "app", "asset", "lautech_logo.png"))
         if type_choice in ["Image", "Video"]:
             st.sidebar.markdown(f"You can download demo files [here]({DEMO_FILES_URL}).")
 
