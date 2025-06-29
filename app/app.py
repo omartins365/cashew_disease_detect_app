@@ -157,7 +157,14 @@ def process_image_and_display(model: YOLOv10, temp_path: str, result_path: str) 
                 st.error("Image processing failed.")
     if result["success"]:
         # st.image(result_path, "Result Image", use_column_width=True)
-        st.success(f"Image processed. Result saved: {result_path}")
+        st.success(f"Image processed. Result saved")
+        with open(result_path, "rb") as f:
+            st.download_button(
+                label="Download Result Image",
+                data=f,
+                file_name=os.path.basename(result_path),
+                mime="image/jpeg" if result_path.endswith(".jpg") else "image/png"
+            )
         # st.write(f"**Inference Time:** {result['inference_time']:.2f} seconds")
         
         st.metric("Total Time (s)", f"{result['inference_time']:.2f}")
@@ -198,7 +205,14 @@ def display_and_process_file(model: YOLOv10, type_choice: str, temp_path: str, r
                 result_path = result_path.replace(".mp4", ".webm")
                 result = process_video(model, temp_path, result_path)
                 if result["success"]:
-                    st.success(f"Video processed. Result saved: {result_path}")
+                    st.success(f"Video processed. Result saved")
+                    with open(result_path, "rb") as f:
+                        st.download_button(
+                            label="Download Processed Video",
+                            data=f,
+                            file_name=os.path.basename(result_path),
+                            mime="video/webm"
+                        )
                     st.video(result_path)
                     st.write(f"**Total Processing Time:** {result['inference_time']:.2f} seconds")
                     st.metric("Total Processing Time (s)", f"{result['inference_time']:.2f}")
