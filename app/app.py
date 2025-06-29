@@ -136,7 +136,7 @@ def process_image_and_display(model: YOLOv10, temp_path: str, result_path: str) 
     col1, col2 = st.columns(2)
     result = None
     with col1:
-        st.image(image, "Uploaded Image", use_column_width=True)
+        st.image(image, "Uploaded Image", use_container_width=True)
     # Process and display result image
     with col2:
         
@@ -144,7 +144,7 @@ def process_image_and_display(model: YOLOv10, temp_path: str, result_path: str) 
             #""" Process the uploaded image and display the result. """
             result = process_image(model, temp_path, result_path)
             if result["success"]:
-                st.image(result_path, "Result Image", use_column_width=True)
+                st.image(result_path, "Result Image", use_container_width=True)
                 # st.success(f"Image processed. Result saved: {result_path}")
                 # st.write(f"**Inference Time:** {result['inference_time']:.2f} seconds")
                 
