@@ -272,7 +272,7 @@ def live_cam_detect(model: YOLOv10):
 
 def main():
     st.logo(os.path.join(os.getcwd(), "app", "asset", "lautech_logo.png"))
-    # st.help("Detection and Classification of Cashew Diseases using YOLOv10")
+    # st.title("Detection and Classification of Cashew Diseases using YOLOv10")
     st.sidebar.title("Cashew Disease Detection")
 
     # st.sidebar.title("🌰 Cashew Disease Detection")
@@ -327,6 +327,7 @@ def main():
         cols = st.columns([1, 2, 1])
         with cols[1]:
             st.image(os.path.join(os.getcwd(), "app", "asset", "lautech_logo.png"))
+        st.title("Detection and Classification of Cashew Diseases using YOLOv10")
         st.markdown("""
         Detect diseases in cashew plants using a custom-trained YOLOv10 model.  
         Upload an image or video, or use your camera to get instant results.
