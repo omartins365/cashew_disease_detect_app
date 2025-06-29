@@ -263,10 +263,6 @@ def main():
     # st.sidebar.title("🌰 Cashew Disease Detection")
     st.sidebar.markdown("Upload an image or video of cashew leaves, nuts or stem to detect diseases using the custom YOLOv10 model.")
 
-    st.markdown("""
-    Detect diseases in cashew plants using a custom-trained YOLOv10 model.  
-    Upload an image or video, or use your camera to get instant results.
-    """)
 
     
     model = select_model()
@@ -312,6 +308,10 @@ def main():
         display_and_process_file(model, type_choice, temp_path, result_path)
         os.remove(temp_path)
     else:
+        st.markdown("""
+        Detect diseases in cashew plants using a custom-trained YOLOv10 model.  
+        Upload an image or video, or use your camera to get instant results.
+        """)
         if type_choice in ["Image", "Video"]:
             st.sidebar.markdown(f"You can download demo files [here]({DEMO_FILES_URL}).")
 
