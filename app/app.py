@@ -271,6 +271,7 @@ def live_cam_detect(model: YOLOv10):
 
 
 def main():
+    st.logo(os.path.join(os.getcwd(), "app", "asset", "lautech_logo.png"))
     # st.help("Detection and Classification of Cashew Diseases using YOLOv10")
     st.sidebar.title("Cashew Deasease Detection")
 
