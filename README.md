@@ -62,7 +62,7 @@ This project is a practical deliverable for the M.Tech research work, aiming to:
 ### Installation
 1. Clone this repository:
    ```sh
-   git clone https://github.com/your-username/cashew_disease_detect_app.git
+   git clone https://github.com/omartins365/cashew_disease_detect_app.git
    cd cashew_disease_detect_app
    ```
 2. Install dependencies:
