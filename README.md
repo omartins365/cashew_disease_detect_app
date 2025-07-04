@@ -1,5 +1,30 @@
 # Cashew Disease Detection and Classification System (YOLOv10)
 
+## Project Structure
+
+```
+cashew_disease_detect_app/
+├── app/
+│   ├── app.py
+│   ├── config.py
+│   ├── live.py
+│   ├── train.py
+│   ├── utils.py
+│   ├── asset/
+│   │   └── lautech_logo.png
+│   ├── model/
+│   │   ├── best.onnx
+│   │   ├── best.pt
+│   │   └── yolov10s.pt
+│   └── yolov10/
+│       ├── app.py
+│       ├── ... (YOLOv10 source, docs, examples, etc.)
+├── requirements.txt
+├── README.md
+├── setup.py
+└── ... (other files and folders)
+```
+
 ## Overview
 This repository contains the implementation of a real-time Cashew Disease Detection and Classification System using the YOLOv10 deep learning model. The project is part of an M.Tech research thesis titled:
 
