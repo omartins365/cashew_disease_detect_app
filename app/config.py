@@ -13,7 +13,8 @@ EPOCHS = 100
 IMG_SIZE = 640
 BATCH_SIZE = 24
 
-CONFIDENCE_THRESHOLD = 0.2
+CONFIDENCE_THRESHOLD = 0.5
 
 
 TRAINED_MODEL_PATH = os.path.join(os.getcwd(), "app", "model", "best.onnx")
+
