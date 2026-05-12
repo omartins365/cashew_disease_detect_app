@@ -1,4 +1,4 @@
-streamlit
+streamlit==1.46.1
 gdown==5.2.0
 htbuilder==0.6.2
 supervision==0.20.0
