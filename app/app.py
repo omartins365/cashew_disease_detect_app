@@ -1,11 +1,14 @@
 import os
+import sys
 import subprocess
 
 if not os.path.exists("app/yolov10"):
     subprocess.run(["git", "clone", "https://github.com/THU-MIG/yolov10.git", "app/yolov10"], check=True)
 
-import logging  # Add this import
-import os
+# Add yolov10 to Python path
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "yolov10"))
+
+import logging
 import tempfile
 import platform
 import psutil
